@@ -2,72 +2,78 @@
 
 
 /**
- * #############################################################################################################################
- * #                                                                                                                           #
- * #  Polymorphism describes a pattern in oop in which classes have different functionality while sharing a common interface.  #
- * #  This mean that the code will work with different classes without the need to know the exact class it's operating on.     #
- * #                                                                                                                           #
- * # ###########################################################################################################################
+ * 
+ * Polymorphism in which classes have different functionality while sharing a common interface.
+ * 
  **/
 
 
 /**
-* The Interface Shape class.
+* The Interface Data class.
 **/
-interface Shape {
+interface Data {
   
-  public function calcArea();
+  public function save();
 }
 
 /**
-* The ShapeUtils class.
+* The DataUtils class.
 **/
-class ShapeUtils {
+class DataUtils {
   
-  static function getShapeInfo(Shape $shapeObj) {
-    $shape_type = get_class($shapeObj);
-    return "The shape type is a {$shape_type} and it's area size is: {$shapeObj->calcArea()}";
-  }
-}
-
-/**
-* Rectangle class.
-**/
-class Rectangle implements Shape {
-  
-  private $height;
-  private $width;
-
-  public function __construct($height, $width) {
-    $this->height = $height;
-    $this->width = $width;
-  }
-
-  public function calcArea() {
-    return $this->height * $this->width;
+   function saveData(Data $DataObj) {
+    $Data_type = get_class($DataObj);
+    return "<br><br><br>The Class Name is a {$Data_type} and it's data format is as <br> {$DataObj->save()}";
   }
 }
 
 /**
-* Circle class.
+* Json class.
 **/
-class Circle implements Shape {
+class Json implements Data {  
+  
+  private $value;
 
-  private $radius;
-
-  public function __construct($radius) {
-    $this->radius = $radius;
+  public function __construct( $value) {   
+    $this->value = $value;
   }
 
-  public function calcArea() {
-    return pow($this->radius, 2) * pi();
+  public function save() {
+    return json_encode($this->value);
   }
 }
 
-// Display the "Rectangle" info.
-echo ShapeUtils::getShapeInfo(new Rectangle(4, 5));
-echo "</br>";
-// Display the "Circle" info.
-echo ShapeUtils::getShapeInfo(new Circle(4));
+/**
+* Csv class.
+**/
+class Csv implements Data {
+
+  private $value;
+
+  public function __construct($value) {
+    $this->value = $value;
+  }
+
+  public function save() {
+    $str='';
+    foreach($this->value as $key => $val){
+        $str .=$key.':'.$val.', ';
+    }
+    return $str;
+  }
+}
+
+$sampleData=array(
+  'name'=>'php',
+  'typing'=>'dynamic weak',  
+  'designedby'=>'Rasmus Lerdorf'
+);
+
+$a=new DataUtils();
+
+echo $a->saveData(new Json( $sampleData ));
+
+
+echo $a->saveData(new Csv( $sampleData ))
 
 ?>
